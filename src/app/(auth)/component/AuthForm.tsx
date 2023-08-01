@@ -3,6 +3,8 @@ import Button from "@/app/components/Button";
 import Input from "@/app/components/inputs/Input";
 import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import SocialLoginButton from "./SocialLoginButton";
+import {BsGithub, BsGoogle} from 'react-icons/bs'
 
 type Props = {};
 
@@ -43,6 +45,13 @@ export default function AuthForm({}: Props) {
     }
   };
 
+
+  const socialAction = (action:string)=>{
+
+    setLoading(true);
+
+  }
+
   return (
     <div
       className="
@@ -60,6 +69,16 @@ export default function AuthForm({}: Props) {
       sm:rounded-lg
       "
       >
+        <p className="
+        text-xl
+        py-3
+        text-center
+        font-semibold
+        ">
+        {
+          variant === 'LOGIN' ? "Login" : "Register" 
+        }
+        </p>
         <form onSubmit={handleSubmit(onSubmit)}>
           {variant === "REGISTER" && (
             <Input
@@ -68,6 +87,7 @@ export default function AuthForm({}: Props) {
               label="Name"
               register={register}
               errors={errors}
+              disable={isLoading}
             />
           )}
           <Input
@@ -76,6 +96,7 @@ export default function AuthForm({}: Props) {
             label="Email Address"
             register={register}
             errors={errors}
+            disable={isLoading}
           />
           <Input
             type="password"
@@ -83,6 +104,7 @@ export default function AuthForm({}: Props) {
             label="Password"
             register={register}
             errors={errors}
+            disable={isLoading}
           />
           <div
             className="
@@ -123,6 +145,39 @@ export default function AuthForm({}: Props) {
               text-gray-500
               ">or continue with</span>
             </div>
+          </div>
+
+          <div className="
+          mt-4
+          flex
+          justify-between
+          gap-3
+          ">
+            <SocialLoginButton icon={BsGoogle} onClick={()=>socialAction('google')}/>
+            <SocialLoginButton icon={BsGithub} onClick={()=>socialAction('Github')}/>
+          </div>
+
+          <div className=" text-center" onClick={toggleVariant}>
+          {
+            variant === 'LOGIN' ?  
+            <div className="text-sm mt-2">
+            <span>New Here ?</span> 
+            <span className="
+            text-purple-700 
+            hover:underline
+            cursor-pointer
+            "> Create an account</span>
+          </div> 
+          : 
+          <div className="text-sm mt-2">
+            <span> Already have an account ?</span> 
+            <span className="
+            text-purple-700 
+            hover:underline
+            cursor-pointer
+            "> Login </span>
+          </div>
+          }
           </div>
 
         </div>
