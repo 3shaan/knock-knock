@@ -11,6 +11,7 @@ datasource db {
 }
 
 model User {
+
   id String @id @default(auto()) @map("_id") @db.ObjectId
   name String?
   email String? @unique
@@ -19,4 +20,71 @@ model User {
   image String?
   createdAt DateTime @default(now())
   updatedAt DateTime?
+
+  conversationIds String[] @db.ObjectId
+  conversations Conversation[] @relation(fields: [conversationIds], references: [id])
+
+  seenMessageIds String[] @db.ObjectId
+  seenMessages Message[] @relation("Seen" , fields: [seenMessageIds], references: [id])
+
+  account Account[]
+  message Message[]
+}
+
+
+// Account schema model
+
+model Account {
+
+  id String @id @default(auto()) @map("_id") @db.ObjectId 
+  userId String @db.ObjectId
+  type String
+  provider String
+  providerAccountId String
+  refresh_token String? @db.String
+  access_token String? @db.String
+  expried_at Int?
+  token_type String?
+  scope String?
+  id_token String? @db.String
+  session_state String?
+  
+  user User @relation(fields: [userId], references: [id], onDelete:Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+// Conversation schema
+
+model Conversation {
+  id String @id @default(auto()) @map("_id") @db.ObjectId 
+  createAt DateTime @default(now())
+  lastMessage DateTime @default(now())
+  name String?
+  isGroup Boolean?
+
+  messagesIds String[] @db.String
+  messages Message[]
+
+  userIds String[] @db.ObjectId
+  user User[] @relation(fields: [userIds], references: [id])
+}
+
+// Message Schema
+
+model Message {
+  id String @id @default(auto()) @map("_id") @db.ObjectId 
+  body String?
+  Image String?
+  CreateAt DateTime @default(now())
+
+  seenIds String[] @db.ObjectId
+  seen User[] @relation("Seen", fields: [seenIds], references: [id])
+
+  conversationId String @db.ObjectId
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete:Cascade)
+
+  senderIds String @db.ObjectId
+  sender User @relation(fields: [senderIds], references: [id], onDelete : Cascade)
+
+
 }
