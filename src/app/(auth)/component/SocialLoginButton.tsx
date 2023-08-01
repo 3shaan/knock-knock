@@ -14,6 +14,7 @@ const SocialLoginButton:React.FC <SocialLoginButtonProps> = ({
 }) => {
     return (
         <button 
+        onClick={onClick}
         type='button'
         className='
         inline-flex

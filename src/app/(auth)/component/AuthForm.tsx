@@ -5,6 +5,9 @@ import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import SocialLoginButton from "./SocialLoginButton";
 import {BsGithub, BsGoogle} from 'react-icons/bs'
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { signIn } from "next-auth/react";
 
 type Props = {};
 
@@ -38,10 +41,25 @@ export default function AuthForm({}: Props) {
     setLoading(true);
 
     if (variant === "LOGIN") {
-      // login api call
+      signIn('credentials',{
+        ...data,
+        redirect:false
+      })
+      .then((callback)=>{
+        if(callback?.error){
+          toast.error('Invalid credentials')
+        };
+        if(callback?.ok && !callback.error){
+          toast.success('login success');
+        }
+      })
+      .finally(()=>setLoading(false));
     }
     if (variant === "REGISTER") {
       // register api call ;
+      axios.post('/api/register', data)
+      .catch(err=> toast.error('something is wrong'))
+      .finally(()=>setLoading(false));
     }
   };
 
@@ -49,6 +67,16 @@ export default function AuthForm({}: Props) {
   const socialAction = (action:string)=>{
 
     setLoading(true);
+    signIn(action,{redirect:false})
+    .then(callback=>{
+      if(callback?.error){
+        toast.error('Invalid Credentials')
+      };
+      if(callback?.ok && !callback.error){
+        toast.success('login successful');
+      }
+    })
+    .finally(()=>setLoading(false));
 
   }
 
@@ -154,7 +182,7 @@ export default function AuthForm({}: Props) {
           gap-3
           ">
             <SocialLoginButton icon={BsGoogle} onClick={()=>socialAction('google')}/>
-            <SocialLoginButton icon={BsGithub} onClick={()=>socialAction('Github')}/>
+            <SocialLoginButton icon={BsGithub} onClick={()=>socialAction('github')}/>
           </div>
 
           <div className=" text-center" onClick={toggleVariant}>
