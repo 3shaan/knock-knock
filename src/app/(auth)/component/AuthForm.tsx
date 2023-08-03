@@ -1,13 +1,14 @@
 "use client";
 import Button from "@/app/components/Button";
 import Input from "@/app/components/inputs/Input";
-import { useCallback, useState } from "react";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import SocialLoginButton from "./SocialLoginButton";
-import {BsGithub, BsGoogle} from 'react-icons/bs'
 import axios from "axios";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { signIn } from "next-auth/react";
+import { BsGithub, BsGoogle } from "react-icons/bs";
+import SocialLoginButton from "./SocialLoginButton";
 
 type Props = {};
 
@@ -16,6 +17,15 @@ type Variant = "LOGIN" | "REGISTER";
 export default function AuthForm({}: Props) {
   const [variant, setVariant] = useState<Variant>("LOGIN");
   const [isLoading, setLoading] = useState(false);
+  const session = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session.status === "authenticated") {
+      console.log("User is authenticate");
+      router.push("/users");
+    }
+  }, [session.status, router]);
 
   const toggleVariant = useCallback(() => {
     if (variant === "LOGIN") {
@@ -41,44 +51,44 @@ export default function AuthForm({}: Props) {
     setLoading(true);
 
     if (variant === "LOGIN") {
-      signIn('credentials',{
+      signIn("credentials", {
         ...data,
-        redirect:false
+        redirect: false,
       })
-      .then((callback)=>{
-        if(callback?.error){
-          toast.error('Invalid credentials')
-        };
-        if(callback?.ok && !callback.error){
-          toast.success('login success');
-        }
-      })
-      .finally(()=>setLoading(false));
+        .then((callback) => {
+          if (callback?.error) {
+            toast.error("Invalid credentials");
+          }
+          if (callback?.ok && !callback.error) {
+            toast.success("login success");
+            router.push("/users");
+          }
+        })
+        .finally(() => setLoading(false));
     }
     if (variant === "REGISTER") {
       // register api call ;
-      axios.post('/api/register', data)
-      .catch(err=> toast.error('something is wrong'))
-      .finally(()=>setLoading(false));
+      axios
+        .post("/api/register", data)
+        .then(()=>signIn('credentials', data))
+        .catch((err) => toast.error("something is wrong"))
+        .finally(() => setLoading(false));
     }
   };
 
-
-  const socialAction = (action:string)=>{
-
+  const socialAction = (action: string) => {
     setLoading(true);
-    signIn(action,{redirect:false})
-    .then(callback=>{
-      if(callback?.error){
-        toast.error('Invalid Credentials')
-      };
-      if(callback?.ok && !callback.error){
-        toast.success('login successful');
-      }
-    })
-    .finally(()=>setLoading(false));
-
-  }
+    signIn(action, { redirect: false })
+      .then((callback) => {
+        if (callback?.error) {
+          toast.error("Invalid Credentials");
+        }
+        if (callback?.ok && !callback.error) {
+          toast.success("login successful");
+        }
+      })
+      .finally(() => setLoading(false));
+  };
 
   return (
     <div
@@ -97,15 +107,15 @@ export default function AuthForm({}: Props) {
       sm:rounded-lg
       "
       >
-        <p className="
+        <p
+          className="
         text-xl
         py-3
         text-center
         font-semibold
-        ">
-        {
-          variant === 'LOGIN' ? "Login" : "Register" 
-        }
+        "
+        >
+          {variant === "LOGIN" ? "Login" : "Register"}
         </p>
         <form onSubmit={handleSubmit(onSubmit)}>
           {variant === "REGISTER" && (
@@ -139,75 +149,99 @@ export default function AuthForm({}: Props) {
             mt-3
         "
           >
-            <Button 
-            disable={isLoading}
-            fullWidth
-            type="submit"
-            >{variant === "LOGIN" ? "Sign in" : "Register"} </Button>
+            <Button disable={isLoading} fullWidth type="submit">
+              {variant === "LOGIN" ? "Sign in" : "Register"}{" "}
+            </Button>
           </div>
         </form>
         <div className="mt-5">
           <div className="relative">
-            <div className="
+            <div
+              className="
             absolute
             inset-0 
             flex 
             items-center
-            ">
-            <div className="
+            "
+            >
+              <div
+                className="
             w-full 
             border-t 
             border-gray-300
-            "/>
+            "
+              />
             </div>
-            <div className="
+            <div
+              className="
             relative
             flex
             justify-center
             text-sm
 
-            ">
-              <span className="
+            "
+            >
+              <span
+                className="
               bg-white 
               px-2
               text-gray-500
-              ">or continue with</span>
+              "
+              >
+                or continue with
+              </span>
             </div>
           </div>
 
-          <div className="
+          <div
+            className="
           mt-4
           flex
           justify-between
           gap-3
-          ">
-            <SocialLoginButton icon={BsGoogle} onClick={()=>socialAction('google')}/>
-            <SocialLoginButton icon={BsGithub} onClick={()=>socialAction('github')}/>
+          "
+          >
+            <SocialLoginButton
+              icon={BsGoogle}
+              onClick={() => socialAction("google")}
+            />
+            <SocialLoginButton
+              icon={BsGithub}
+              onClick={() => socialAction("github")}
+            />
           </div>
 
           <div className=" text-center" onClick={toggleVariant}>
-          {
-            variant === 'LOGIN' ?  
-            <div className="text-sm mt-2">
-            <span>New Here ?</span> 
-            <span className="
+            {variant === "LOGIN" ? (
+              <div className="text-sm mt-2">
+                <span>New Here ?</span>
+                <span
+                  className="
             text-purple-700 
             hover:underline
             cursor-pointer
-            "> Create an account</span>
-          </div> 
-          : 
-          <div className="text-sm mt-2">
-            <span> Already have an account ?</span> 
-            <span className="
+            "
+                >
+                  {" "}
+                  Create an account
+                </span>
+              </div>
+            ) : (
+              <div className="text-sm mt-2">
+                <span> Already have an account ?</span>
+                <span
+                  className="
             text-purple-700 
             hover:underline
             cursor-pointer
-            "> Login </span>
+            "
+                >
+                  {" "}
+                  Login{" "}
+                </span>
+              </div>
+            )}
           </div>
-          }
-          </div>
-
         </div>
       </div>
     </div>
