@@ -11,7 +11,7 @@ export default async function Sidebar({children}: Props) {
   const currentUser = await getCurrentUser();
   return ( 
     <div className='h-full'>
-        <DesktopSidebar currentUser={currentUser}/>
+        <DesktopSidebar currentUser={currentUser!}/>
         <MobileFooter/>
         <main className='
         lg:pl-10 h-full
