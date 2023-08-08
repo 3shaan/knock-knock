@@ -22,7 +22,7 @@ export  async function POST(request: Request) {
         data: {
           name,
           isGroup,
-          user: {
+          users: {
             connect: [
               ...members.map((member: { value: string }) => {
                 id: member.value;
@@ -34,7 +34,7 @@ export  async function POST(request: Request) {
           },
         },
         include: {
-          user: true,
+          users: true,
         },
       });
 
@@ -66,7 +66,7 @@ export  async function POST(request: Request) {
 
     const newConversation = await prisma.conversation.create({
       data: {
-        user: {
+        users: {
           connect: [
             {
               id: currentUser.id,
@@ -78,7 +78,7 @@ export  async function POST(request: Request) {
         },
       },
       include: {
-        user: true,
+        users: true,
       },
     });
     return NextResponse.json(newConversation);

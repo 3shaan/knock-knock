@@ -18,7 +18,7 @@ export async function getConversation (){
                 }
             },
             include:{
-                user:true,
+                users:true,
                 messages:{
                     include:{
                         sender:true,
