@@ -13,7 +13,7 @@ export default function useOtherUsers(
     const otherUser = conversation.users?.filter(
       (user) => user.email !== currentUserEmail
     );
-    console.log(otherUser);
+    // console.log(otherUser);
     return otherUser[0];
   }, [session.data?.user?.email, conversation]);
   return otherUser;

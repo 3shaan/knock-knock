@@ -49,8 +49,8 @@ export default function ConversationBox({
   }, [userEmail, lastMessage]);
 
   const lastMessageText = useMemo(() => {
-    if (lastMessage?.Image) {
-      return "send an Images";
+    if (lastMessage?.image) {
+      return "Send an Images";
     }
 
     if (lastMessage?.body) {
@@ -77,7 +77,7 @@ export default function ConversationBox({
     cursor-pointer
     `,
         selected ? "bg-neutral-100" : "bg-white",
-        hasSeen ? "text-gray-600":"text-black font-medium"
+        hasSeen ? "text-gray-600 font-semibold" : "text-black font-medium"
       )}
     >
       <div>
@@ -95,17 +95,15 @@ export default function ConversationBox({
             <p
               className="
             text-gray-400
-            font-xs
-            font-light
+            text-xs
+            
             "
             >
               {format(new Date(lastMessage?.CreateAt), "p")}
             </p>
           )}
         </div>
-        <p className='truncate text-sm'>
-          {lastMessageText}
-        </p>
+        <p className="truncate text-sm">{lastMessageText}</p>
       </div>
     </div>
   );
