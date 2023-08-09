@@ -44,7 +44,6 @@ export default function ConversationBox({
     if (!userEmail) {
       return false;
     }
-
     return seenArray.filter((seen) => seen.email === userEmail).length !== 0;
   }, [userEmail, lastMessage]);
 
@@ -76,8 +75,7 @@ export default function ConversationBox({
     transition
     cursor-pointer
     `,
-        selected ? "bg-neutral-100" : "bg-white",
-        hasSeen ? "text-gray-600 font-semibold" : "text-black font-medium"
+        selected ? "bg-neutral-100" : "bg-white"
       )}
     >
       <div>
@@ -103,7 +101,15 @@ export default function ConversationBox({
             </p>
           )}
         </div>
-        <p className="truncate text-sm">{lastMessageText}</p>
+        <p 
+            className={clsx(`
+              truncate 
+              text-sm
+              `,
+              hasSeen ? 'text-gray-500' : 'text-black font-medium'
+            )}>
+              {lastMessageText}
+            </p>
       </div>
     </div>
   );

@@ -1,9 +1,9 @@
 import { getConversationById } from "@/app/Action/getConversationById";
+import { getMessage } from "@/app/Action/getMessage";
 import EmptyState from "@/app/components/EmptyState";
 import Body from "./components/Body";
-import Header from "./components/Header";
 import Form from "./components/Form";
-import { getMessage } from "@/app/Action/getMessage";
+import Header from "./components/Header";
 
 type Props = {
   conversationId: string;
@@ -44,8 +44,8 @@ export default async function Conversation({ params }: { params: Props }) {
     >
       <div className="h-full flex flex-col">
         <Header conversation={conversation} />
-        <Body initialMessage={message}/>
-        <Form/>
+        <Body initialMessage={message} />
+        <Form />
       </div>
     </div>
   );
