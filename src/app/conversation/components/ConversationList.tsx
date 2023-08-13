@@ -6,16 +6,27 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { MdOutlineGroupAdd } from "react-icons/md";
 import ConversationBox from "./ConversationBox";
+import GroupMessageModal from "./GroupMessageModal";
+import { User } from "@prisma/client";
 
 type Props = {
   initialItems: FullConversationType[];
+  users:User[] | null
 };
 
-export default function ConversationList({ initialItems }: Props) {
+export default function ConversationList({ initialItems , users}: Props) {
   const [items, setItems] = useState(initialItems);
+  const [isModalOpen, setModalOpen] = useState(false);
+
   const router = useRouter();
   const { conversationId, isOpen } = useConversation();
   return (
+    <>
+    <GroupMessageModal
+    users={users!}
+    isOpen={isModalOpen}
+    onClose={()=>setModalOpen(false)}
+    />
     <div
       className={clsx(
         `
@@ -55,6 +66,7 @@ export default function ConversationList({ initialItems }: Props) {
           <p>Message</p>
         </div>
         <div
+        onClick={()=>setModalOpen(true)}
           className="
         text-2xl
         text-gray-600
@@ -73,5 +85,6 @@ export default function ConversationList({ initialItems }: Props) {
         />
       ))}
     </div>
+    </>
   );
 }

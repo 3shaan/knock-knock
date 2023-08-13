@@ -25,8 +25,8 @@ export default function ProfileDrawer({
   const [isConfirmModal, setIsConfirmModal]=useState(false);
 
   const title = useMemo(() => {
-    return data.name || otherUser.name;
-  }, [data.name, otherUser.name]);
+    return data.name || otherUser?.name;
+  }, [data.name, otherUser?.name]);
 
   const joinedDate = useMemo(() => {
     return format(new Date(otherUser.createdAt), 'PP');

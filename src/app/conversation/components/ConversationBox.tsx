@@ -88,7 +88,7 @@ export default function ConversationBox({
       justify-between
       "
         >
-          <p>{otherUsers.name}</p>
+          <p>{data.name || otherUsers.name}</p>
           {lastMessage?.CreateAt && (
             <p
               className="

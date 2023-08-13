@@ -2,8 +2,8 @@ import getCurrentUser from "@/app/Action/getCurrentUser";
 import prisma from "@/app/libs/prismadb";
 import { NextResponse } from "next/server";
 
-export  async function POST(request: Request) {
-    console.log('req',request);
+export async function POST(request: Request) {
+  console.log("req", request);
   try {
     const currentUser = await getCurrentUser();
     const body = await request.json();
@@ -24,9 +24,9 @@ export  async function POST(request: Request) {
           isGroup,
           users: {
             connect: [
-              ...members.map((member: { value: string }) => {
-                id: member.value;
-              }),
+              ...members.map((member: { value: string }) => ({
+                id: member.value,
+              })),
               {
                 id: currentUser.id,
               },
