@@ -1,5 +1,6 @@
 "use client";
 import Avatar from "@/app/components/Avatar";
+import Loading from "@/app/components/Loading";
 import { User } from "@prisma/client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -24,6 +25,10 @@ export default function UserBox({ user }: UserBoxProps) {
       .finally(() => setIsLoading(false));
   }, [router, user]);
   return (
+    <>
+    {
+      isLoading && <Loading/>
+    }
     <div
       onClick={handleClick}
       className="
@@ -64,5 +69,6 @@ export default function UserBox({ user }: UserBoxProps) {
         </div>
       </div>
     </div>
+    </>
   );
 }

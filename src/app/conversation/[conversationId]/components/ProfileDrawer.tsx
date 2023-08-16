@@ -1,3 +1,5 @@
+'use client'
+
 import Avatar from "@/app/components/Avatar";
 import useOtherUsers from "@/app/hooks/useOtherUser";
 import { Dialog, Transition } from "@headlessui/react";
@@ -7,6 +9,7 @@ import { IoClose, IoTrash } from "react-icons/io5";
 import {format} from 'date-fns'
 import Modal from "@/app/components/Modals/Modal";
 import ConfirmModal from "./ConfirmModal";
+import AvatarGroup from "@/app/components/AvatarGroup";
 
 type ProfileDrawerProps = {
   data: Conversation & {
@@ -159,7 +162,13 @@ export default function ProfileDrawer({
                       text-center
                       "
                         >
-                          <Avatar user={otherUser} />
+                          <div>
+                          {
+                            data.isGroup ?
+                            (<AvatarGroup users={data.users}/>) : 
+                            (<Avatar user={otherUser} />)
+                          }
+                          </div>
 
                           <p
                             className="
@@ -197,11 +206,59 @@ export default function ProfileDrawer({
                         </div>
                         {/* info Start  */}
                         <div>
-                          <dl>Email</dl>
-                          <dt>{otherUser.email} </dt>
+                        {data.isGroup && (
+                            <div>
+                              <dt 
+                                className="
+                                  text-sm 
+                                  font-medium 
+                                  text-gray-500 
+                                  sm:w-40 
+                                  sm:flex-shrink-0
+                                "
+                              >
+                                Emails
+                              </dt>
+                              <dd 
+                                className="
+                                  mt-1 
+                                  text-sm 
+                                  text-gray-900 
+                                  sm:col-span-2
+                                "
+                              >
+                                {data.users.map((user) => user.email).join(', ')}
+                              </dd>
+                            </div>
+                          )}
+                          {!data.isGroup && (
+                            <div>
+                              <dt 
+                                className="
+                                  text-sm 
+                                  font-medium 
+                                  text-gray-500 
+                                  sm:w-40 
+                                  sm:flex-shrink-0
+                                "
+                              >
+                                Email
+                              </dt>
+                              <dd 
+                                className="
+                                  mt-1 
+                                  text-sm 
+                                  text-gray-900 
+                                  sm:col-span-2
+                                "
+                              >
+                                {otherUser.email}
+                              </dd>
+                            </div>
+                          )}
                           {!data.isGroup && (
                             <>
-                              <hr className="mt-4"/>
+                              <hr />
                               <div>
                                 <dt 
                                   className="
@@ -210,7 +267,6 @@ export default function ProfileDrawer({
                                     text-gray-500 
                                     sm:w-40 
                                     sm:flex-shrink-0
-                                    mt-2
                                   "
                                 >
                                   Joined

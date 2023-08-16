@@ -1,5 +1,6 @@
 "use client";
 import Avatar from "@/app/components/Avatar";
+import AvatarGroup from "@/app/components/AvatarGroup";
 import useOtherUsers from "@/app/hooks/useOtherUser";
 import { FullConversationType } from "@/app/types";
 import clsx from "clsx";
@@ -79,7 +80,12 @@ export default function ConversationBox({
       )}
     >
       <div>
-        <Avatar user={otherUsers} />
+        {
+          data.isGroup ?
+           (<AvatarGroup users={data.users}/>) : 
+          (<Avatar user={otherUsers} />)
+        }
+        
       </div>
       <div className="w-full">
         <div
