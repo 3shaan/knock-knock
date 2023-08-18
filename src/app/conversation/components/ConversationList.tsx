@@ -58,15 +58,27 @@ export default function ConversationList({ initialItems, users }: Props) {
         })
       );
     };
+
+    const deleteHandler = (conversation: FullConversationType) => {
+      setItems((current) =>
+        current.filter((con) => con.id !== conversation.id)
+      );
+
+      if (conversationId === conversation.id) {
+        router.push("/conversation");
+      }
+    };
     pusherClient.bind("conversation:new", updateConversation);
     pusherClient.bind("conversation:update", updateHandler);
+    pusherClient.bind("conversation:remove", deleteHandler);
 
     return () => {
       pusherClient.unsubscribe(userEmail);
       pusherClient.unbind("conversation:new", updateConversation);
       pusherClient.unbind("conversation:update", updateHandler);
+      pusherClient.unbind("conversation:remove", deleteHandler);
     };
-  }, [userEmail]);
+  }, [userEmail, conversationId, router]);
   return (
     <>
       <GroupMessageModal
