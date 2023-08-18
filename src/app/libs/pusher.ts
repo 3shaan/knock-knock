@@ -9,6 +9,6 @@ export const pusherServer = new PusherServer({
   useTLS: true,
 });
 
-export const pusherClient = new PusherClient(process.env.PUSHER_KEY!, {
+export const pusherClient = new PusherClient("d1718fbdeb35398e7a0a", {
   cluster: "ap2",
 });
