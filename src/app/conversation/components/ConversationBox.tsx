@@ -26,6 +26,8 @@ export default function ConversationBox({
     router.push(`/conversation/${data.id}`);
   }, [router, data]);
 
+  console.log("data", data);
+
   const lastMessage = useMemo(() => {
     const message = data.messages || [];
     return message[message.length - 1];
@@ -80,12 +82,11 @@ export default function ConversationBox({
       )}
     >
       <div>
-        {
-          data.isGroup ?
-           (<AvatarGroup users={data.users}/>) : 
-          (<Avatar user={otherUsers} />)
-        }
-        
+        {data.isGroup ? (
+          <AvatarGroup users={data.users} />
+        ) : (
+          <Avatar user={otherUsers} />
+        )}
       </div>
       <div className="w-full">
         <div
@@ -107,15 +108,17 @@ export default function ConversationBox({
             </p>
           )}
         </div>
-        <p 
-            className={clsx(`
+        <p
+          className={clsx(
+            `
               truncate 
               text-sm
               `,
-              hasSeen ? 'text-gray-500' : 'text-black font-medium'
-            )}>
-              {lastMessageText}
-            </p>
+            hasSeen ? "text-gray-500" : "text-black font-medium"
+          )}
+        >
+          {lastMessageText}
+        </p>
       </div>
     </div>
   );

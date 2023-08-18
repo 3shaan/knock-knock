@@ -1,35 +1,82 @@
 "use client";
 import useConversation from "@/app/hooks/useConversations";
+import { pusherClient } from "@/app/libs/pusher";
 import { FullConversationType } from "@/app/types";
+import { User } from "@prisma/client";
 import clsx from "clsx";
+import { find } from "lodash";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MdOutlineGroupAdd } from "react-icons/md";
 import ConversationBox from "./ConversationBox";
 import GroupMessageModal from "./GroupMessageModal";
-import { User } from "@prisma/client";
 
 type Props = {
   initialItems: FullConversationType[];
-  users:User[] | null
+  users: User[] | null;
 };
 
-export default function ConversationList({ initialItems , users}: Props) {
+export default function ConversationList({ initialItems, users }: Props) {
   const [items, setItems] = useState(initialItems);
   const [isModalOpen, setModalOpen] = useState(false);
+  const session = useSession();
+
+  const userEmail = useMemo(() => {
+    return session.data?.user?.email;
+  }, [session.data?.user?.email]);
 
   const router = useRouter();
   const { conversationId, isOpen } = useConversation();
+
+  useEffect(() => {
+    if (!userEmail) {
+      return;
+    }
+    pusherClient.subscribe(userEmail);
+
+    const updateConversation = (conversations: FullConversationType) => {
+      setItems((current) => {
+        if (find(current, { id: conversations.id })) {
+          return current;
+        }
+        return [conversations, ...current];
+      });
+    };
+
+    const updateHandler = (conversation: FullConversationType) => {
+      setItems((current) =>
+        current.map((currentConversation) => {
+          if (currentConversation.id === conversation.id) {
+            return {
+              ...currentConversation,
+              messages: conversation.messages,
+            };
+          }
+
+          return currentConversation;
+        })
+      );
+    };
+    pusherClient.bind("conversation:new", updateConversation);
+    pusherClient.bind("conversation:update", updateHandler);
+
+    return () => {
+      pusherClient.unsubscribe(userEmail);
+      pusherClient.unbind("conversation:new", updateConversation);
+      pusherClient.unbind("conversation:update", updateHandler);
+    };
+  }, [userEmail]);
   return (
     <>
-    <GroupMessageModal
-    users={users!}
-    isOpen={isModalOpen}
-    onClose={()=>setModalOpen(false)}
-    />
-    <div
-      className={clsx(
-        `
+      <GroupMessageModal
+        users={users!}
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+      />
+      <div
+        className={clsx(
+          `
       fixed
       inset-y-0
       md:pl-24
@@ -45,46 +92,46 @@ export default function ConversationList({ initialItems , users}: Props) {
       left-0
 
 `,
-        isOpen ? "hidden md:block" : "block"
-      )}
-    >
-      <div
-        className="
+          isOpen ? "hidden md:block" : "block"
+        )}
+      >
+        <div
+          className="
       flex
       justify-between
       items-center
       pt-3
       "
-      >
-        <div
-          className="
+        >
+          <div
+            className="
         text-2xl
         font-semibold
         text-gray-700
         "
-        >
-          <p>Message</p>
-        </div>
-        <div
-        onClick={()=>setModalOpen(true)}
-          className="
+          >
+            <p>Message</p>
+          </div>
+          <div
+            onClick={() => setModalOpen(true)}
+            className="
         text-2xl
         text-gray-600
         hover:text-gray-400
         pr-5
         "
-        >
-          <MdOutlineGroupAdd />
+          >
+            <MdOutlineGroupAdd />
+          </div>
         </div>
+        {items.map((item) => (
+          <ConversationBox
+            key={item.id}
+            data={item}
+            selected={conversationId === item.id}
+          />
+        ))}
       </div>
-      {items.map((item) => (
-        <ConversationBox
-          key={item.id}
-          data={item}
-          selected={conversationId === item.id}
-        />
-      ))}
-    </div>
     </>
   );
 }

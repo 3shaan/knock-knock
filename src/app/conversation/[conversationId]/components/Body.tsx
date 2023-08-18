@@ -39,22 +39,23 @@ export default function Body({ initialMessage = [] }: BodyProps) {
       ref.current?.scrollIntoView();
     };
 
-    // const updateHandler = (message:FullMessageTypes)=>{
+    const updateHandler = (newMessage:FullMessageTypes)=>{
 
-    //   setMessage(current=>current.map(currentMessage=>{
-    //     if(currentMessage.id === message.id){
-    //       return message;
-    //     }
-    //     return  currentMessage
-    //   }))
-    // };
-    console.log('working')
+      setMessage(current=>current.map(currentMessage=>{
+        if(currentMessage.id === newMessage.id){
+          return newMessage;
+        }
+        return  currentMessage
+      }))
+    };
 
     pusherClient.bind("message:new", MessageHandler);
+    pusherClient.bind('message:update', updateHandler);
 
     return () => {
       pusherClient.unsubscribe(conversationId);
       pusherClient.unbind("message:new", MessageHandler);
+      pusherClient.unbind('message:update', updateHandler);
     };
   }, [conversationId]);
 
