@@ -4,7 +4,7 @@ import { pusherServer } from "@/app/libs/pusher";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  console.log("req", request);
+  // console.log("req", request);
   try {
     const currentUser = await getCurrentUser();
     const body = await request.json();

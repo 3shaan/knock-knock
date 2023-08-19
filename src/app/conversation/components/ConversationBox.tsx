@@ -26,7 +26,7 @@ export default function ConversationBox({
     router.push(`/conversation/${data.id}`);
   }, [router, data]);
 
-  console.log("data", data);
+  // console.log("data", data);
 
   const lastMessage = useMemo(() => {
     const message = data.messages || [];

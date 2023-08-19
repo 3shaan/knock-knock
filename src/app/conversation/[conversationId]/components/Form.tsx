@@ -30,15 +30,15 @@ export default function Form({}: Props) {
     console.log("sub", data);
   };
 
-  const uploadImage = (data:any)=>{
-    axios.post('/api/messages',{
-      image: data?.info?.secure_url ,
-      conversationId
-    })
+  const uploadImage = (data: any) => {
+    axios.post("/api/messages", {
+      image: data?.info?.secure_url,
+      conversationId,
+    });
 
-    console.log(data);
-    console.log(data?.info?.secure_url)
-  }
+    // console.log(data);
+    console.log(data?.info?.secure_url);
+  };
 
   return (
     <div

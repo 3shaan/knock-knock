@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import Avatar from "@/app/components/Avatar";
 import useOtherUsers from "@/app/hooks/useOtherUser";
@@ -6,10 +6,11 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Conversation, User } from "@prisma/client";
 import { Fragment, useMemo, useState } from "react";
 import { IoClose, IoTrash } from "react-icons/io5";
-import {format} from 'date-fns'
+import { format } from "date-fns";
 import Modal from "@/app/components/Modals/Modal";
 import ConfirmModal from "./ConfirmModal";
 import AvatarGroup from "@/app/components/AvatarGroup";
+import useActiveList from "@/app/hooks/useActiveList";
 
 type ProfileDrawerProps = {
   data: Conversation & {
@@ -25,14 +26,17 @@ export default function ProfileDrawer({
   isClose,
 }: ProfileDrawerProps) {
   const otherUser = useOtherUsers(data);
-  const [isConfirmModal, setIsConfirmModal]=useState(false);
+  const [isConfirmModal, setIsConfirmModal] = useState(false);
+
+  const { members } = useActiveList();
+  const isActive = members.indexOf(otherUser.email!) !== -1;
 
   const title = useMemo(() => {
     return data.name || otherUser?.name;
   }, [data.name, otherUser?.name]);
 
   const joinedDate = useMemo(() => {
-    return format(new Date(otherUser.createdAt), 'PP');
+    return format(new Date(otherUser.createdAt), "PP");
   }, [otherUser.createdAt]);
 
   const statusText = useMemo(() => {
@@ -40,16 +44,15 @@ export default function ProfileDrawer({
       return `${data.users.length} members`;
     }
 
-    return "Active"
-  }, [data]);
-
+    return isActive ? "Active" : "Offline";
+  }, [data, isActive]);
 
   return (
     <>
-    <ConfirmModal
-    isOpen={isConfirmModal}
-    onClose={()=>setIsConfirmModal(false)}
-    />
+      <ConfirmModal
+        isOpen={isConfirmModal}
+        onClose={() => setIsConfirmModal(false)}
+      />
       <Transition.Root show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-50" onClose={isClose}>
           <Transition.Child
@@ -118,7 +121,7 @@ export default function ProfileDrawer({
                     "
                     >
                       <div
-                      onClick={isClose}
+                        onClick={isClose}
                         className="
                       flex 
                       w-full 
@@ -163,11 +166,11 @@ export default function ProfileDrawer({
                       "
                         >
                           <div>
-                          {
-                            data.isGroup ?
-                            (<AvatarGroup users={data.users}/>) : 
-                            (<Avatar user={otherUser} />)
-                          }
+                            {data.isGroup ? (
+                              <AvatarGroup users={data.users} />
+                            ) : (
+                              <Avatar user={otherUser} />
+                            )}
                           </div>
 
                           <p
@@ -187,7 +190,9 @@ export default function ProfileDrawer({
                           >
                             {statusText}
                           </p>
-                          <div onClick={()=>setIsConfirmModal(true)} className="
+                          <div
+                            onClick={() => setIsConfirmModal(true)}
+                            className="
                           mt-4 
                           w-10 
                           h-10 
@@ -197,7 +202,8 @@ export default function ProfileDrawer({
                           items-center 
                           justify-center
                           cursor-pointer
-                          ">
+                          "
+                          >
                             <IoTrash size={20} />
                           </div>
                           <div className="text-sm font-light text-neutral-600">
@@ -206,9 +212,9 @@ export default function ProfileDrawer({
                         </div>
                         {/* info Start  */}
                         <div>
-                        {data.isGroup && (
+                          {data.isGroup && (
                             <div>
-                              <dt 
+                              <dt
                                 className="
                                   text-sm 
                                   font-medium 
@@ -219,7 +225,7 @@ export default function ProfileDrawer({
                               >
                                 Emails
                               </dt>
-                              <dd 
+                              <dd
                                 className="
                                   mt-1 
                                   text-sm 
@@ -227,13 +233,15 @@ export default function ProfileDrawer({
                                   sm:col-span-2
                                 "
                               >
-                                {data.users.map((user) => user.email).join(', ')}
+                                {data.users
+                                  .map((user) => user.email)
+                                  .join(", ")}
                               </dd>
                             </div>
                           )}
                           {!data.isGroup && (
                             <div>
-                              <dt 
+                              <dt
                                 className="
                                   text-sm 
                                   font-medium 
@@ -244,7 +252,7 @@ export default function ProfileDrawer({
                               >
                                 Email
                               </dt>
-                              <dd 
+                              <dd
                                 className="
                                   mt-1 
                                   text-sm 
@@ -260,7 +268,7 @@ export default function ProfileDrawer({
                             <>
                               <hr />
                               <div>
-                                <dt 
+                                <dt
                                   className="
                                     text-sm 
                                     font-medium 
@@ -271,7 +279,7 @@ export default function ProfileDrawer({
                                 >
                                   Joined
                                 </dt>
-                                <dd 
+                                <dd
                                   className="
                                     mt-1 
                                     text-sm 

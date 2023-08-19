@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import AuthContext from "./context/AuthContext";
 import ToastContext from "./context/ToastContext";
 import "./globals.css";
+import ActiveStatus from "./components/ActiveStatus";
 
 export const metadata: Metadata = {
   title: "knock-knock",
@@ -18,6 +19,7 @@ export default function RootLayout({
       <body>
         <AuthContext>
           <ToastContext />
+          <ActiveStatus />
           {children}
         </AuthContext>
       </body>
