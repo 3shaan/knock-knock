@@ -29,8 +29,8 @@ export const authOptions: AuthOptions = {
           throw new Error("Invalid Credentials");
         }
 
-        const user  = await prisma.user.findUnique({
-            //remember to change user type later
+        const user = await prisma.user.findUnique({
+          //remember to change user type later
           where: {
             email: credentials.email,
           },
@@ -57,7 +57,10 @@ export const authOptions: AuthOptions = {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/",
+  },
 };
 
 const handler = NextAuth(authOptions);
-export {handler as GET , handler as POST};
+export { handler as GET, handler as POST };
