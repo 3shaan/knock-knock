@@ -13,7 +13,7 @@ export default function Home({}: Props) {
     <div
       className={clsx(
         `
-    md:pl-80 h-full md:block
+    md:pl-[22.5rem] h-full md:block
     `,
         isOpen ? "block" : "hidden"
       )}

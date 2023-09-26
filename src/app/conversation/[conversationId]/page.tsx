@@ -18,7 +18,7 @@ export default async function Conversation({ params }: { params: Props }) {
     return (
       <div
         className="
-        md:pl-80 
+        md:pl-[22.5rem] 
         h-full
         "
       >
@@ -39,7 +39,7 @@ export default async function Conversation({ params }: { params: Props }) {
     <div
       className="
   h-full
-  md:pl-80
+  md:pl-[22.5rem] 
   "
     >
       <div className="h-full flex flex-col">

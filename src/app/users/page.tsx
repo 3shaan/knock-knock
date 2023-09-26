@@ -8,7 +8,7 @@ export default function Users({}: Props) {
     <div className='
     hidden
     md:block
-    md:pl-80
+    md:pl-[22.5rem]
     h-full
     
     '>
