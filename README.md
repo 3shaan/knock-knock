@@ -5,7 +5,7 @@ Knock Knock is a real time chat application where user can communicate with anot
 
 
 ## Screenshots
-![Knock-knock]()
+![Knock-knock](https://github.com/3shaan/knock-knock/public/knock-knock.png)
 
 
 
